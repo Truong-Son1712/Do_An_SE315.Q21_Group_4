@@ -3,6 +3,9 @@ using UnityEngine.EventSystems;
 
 public class UIButtonTween : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    private const float HoverSoundCooldown = 1f;
+    private static float s_LastHoverSoundTime = -HoverSoundCooldown;
+
     private Vector3 startScale;
     private Vector3 targetScale;
     private float time;
@@ -30,7 +33,12 @@ public class UIButtonTween : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         time = 0;
         targetScale = startScale * 1.05f;
 
-        UIAudioManager.Instance?.PlayHover();
+        if (Time.unscaledTime - s_LastHoverSoundTime >= HoverSoundCooldown)
+        {
+            UIAudioManager.Instance?.PlayHover();
+            s_LastHoverSoundTime = Time.unscaledTime;
+        }
+
         if (!isHovering)
         {
             isHovering = true;
